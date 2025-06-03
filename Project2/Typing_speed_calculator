@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+
+import time
+import random
+
+# Prepare sentence for the test
+sentence = ["practice makes the men perfect",
+            "changing your mindset is a gamechanger",
+            "Communication is one thing,but your tone while communicating is everything",
+            "Remember why you Started",
+            "make it happen,girl shock everyone",
+            "Always keep learning new things",
+            "python is powerfull programing language"]
+
+# show the welcome message
+# Bold + Cyan
+print("\033[1;36mWelcome to My Typing Speed Test\033[0m")
+# Bold + Yellow
+print("\033[1;33mType the sentence as fast and accurately as you can.\033[0m")
+# Bold + Green
+print("\033[1;32m---------------------------------------------------\033[0m")
+
+# Randomly choose the sentence
+test_sentence = random.choice(sentence)
+print("your senteneto type is:\n")
+print(test_sentence)
+print("n\Get ready....")
+time.sleep(2)
+
+# Start the typing test 
+# Record the timimg before starting
+start_time = time.time()
+typed_text = input("\nstart your typing")
+# Record the timimg after typing
+end_time = time.time()
+
+# Calculation the typing speed (WPM)
+time_taken = end_time -start_time
+time_in_mintue = time_taken/60
+word_count = len(typed_text.split())
+wpm = word_count/time_in_mintue
+
+# checking the accuraccy
+original_word = test_sentence.split()
+typed_word = typed_text.split()
+correct_word = 0
+for i in range(min(len(original_word),len(typed_word))):
+    if original_word[i] == typed_word[i]:
+        correct_word += 1
+accuracy = (correct_word / len(original_word)) * 100
+
+
+# show the finnal result result
+print("\n----result----")
+print(f"Taken time:{round(time_taken ,2 )}seconds")
+print(f"Typing Speed:{round(wpm ,2)}wmp")
+print(f"Your Accuracy: {round(accuracy, 2)}%")
+print("--------------------")
+
+        
+  
