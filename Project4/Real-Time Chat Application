@@ -1,0 +1,75 @@
+# -*- coding: utf-8 -*-
+
+from flask import Flask, render_template
+from flask_socketio import SocketIO, send
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@socketio.on('message')
+def handle_message(msg):
+    print('Message: ' + msg)
+    send(f"You: {msg}", broadcast=True)  # show your message
+
+    # Simple automatic reply from "Bot"
+    bot_reply = generate_bot_reply(msg)
+    send(f"Bot: {bot_reply}", broadcast=True)
+
+def generate_bot_reply(message):
+    message = message.lower()
+
+    # Greetings
+    if "hi" in message or "hello" in message:
+        return "Hello! 👋 How can I assist you today?"
+
+    # Emotion detection
+    elif "not feeling good" in message or "sad" in message or "tired" in message or "upset" in message or "lonely" in message:
+        return "I'm really sorry you're feeling this way. 💙 I'm here if you want to talk or just need a friend."
+
+    elif "depressed" in message or "anxious" in message:
+        return "That sounds tough. You're not alone — even talking to someone (even a bot!) can help. 💬 Sending virtual hugs 🤗"
+
+    # Common questions
+    elif "how are you" in message:
+        return "I'm just a bot, but I'm always ready to chat with you. 😊"
+
+    elif "name" in message:
+        return "I'm your Flask ChatBot — always here to listen. 🤖"
+
+    elif "joke" in message:
+        return "Why did the developer go broke? Because they used up all their cache! 😂"
+
+    elif "time" in message:
+        from datetime import datetime
+        return "The current time is " + datetime.now().strftime("%I:%M %p")
+
+    elif "date" in message:
+        from datetime import date
+        return "Today's date is: " + str(date.today())
+
+    elif "bye" in message or "goodbye" in message:
+        return "Take care! I'm always here if you need someone to talk to. 👋"
+
+    elif "thanks" in message or "thank you" in message:
+        return "You're welcome! Always happy to help! 😊"
+
+    # Fallback for unknown input
+    else:
+        return "I'm here for you. Try asking me something or just type how you're feeling. 💬"
+
+
+
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True)
+
+
+
+
+
+                        
