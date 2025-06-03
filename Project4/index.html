@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Chat App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(120deg, #a1c4fd, #c2e9fb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            height: 600px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #4a90e2;
+            padding: 15px;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f2faff;
+        }
+
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user {
+            background-color: #DCF8C6;
+            align-self: flex-end;
+        }
+
+        .bot {
+            background-color: #e1f0ff;
+            align-self: flex-start;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #ffffff;
+            border-top: 1px solid #ddd;
+        }
+
+        #message {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            🧠 Flask ChatBot
+        </div>
+        <div class="chat-messages" id="chat"></div>
+        <div class="chat-input">
+            <input id="message" autocomplete="off" placeholder="Type a message..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const chat = document.getElementById('chat');
+
+        socket.on('connect', function () {
+            console.log('Connected to server');
+        });
+
+        socket.on('message', function (msg) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+
+            if (msg.startsWith("You:")) {
+                msgDiv.classList.add('user');
+                msgDiv.textContent = msg.replace("You: ", "");
+            } else if (msg.startsWith("Bot:")) {
+                msgDiv.classList.add('bot');
+                msgDiv.textContent = msg.replace("Bot: ", "");
+            }
+
+            chat.appendChild(msgDiv);
+            chat.scrollTop = chat.scrollHeight;
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('message');
+            const message = input.value.trim();
+            if (message !== '') {
+                socket.send(message);
+                input.value = '';
+            }
+        }
+
+        document.getElementById('message').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
